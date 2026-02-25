@@ -26,7 +26,7 @@ Relative Pathing:
 All scripts rely on:
 
 os.path.dirname(__file__)
-# or
+#or
 pathlib.Path.cwd()
 
 This ensures compatibility regardless of USB drive letter (D:, F:, etc.).
