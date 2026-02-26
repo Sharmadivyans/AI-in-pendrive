@@ -1,4 +1,4 @@
-🛠️ Project JARVIS-on-a-Stick
+## 🛠️ Project JARVIS-on-a-Stick
 
 A self-contained, portable, offline AI Assistant that runs directly from a USB drive.
 
@@ -12,7 +12,7 @@ Natural language reasoning
 
 …all without installing anything on the host machine.
 
-🏗️ 1. Portable Environment Architecture
+## 🏗️ 1. Portable Environment Architecture
 
 To run Python without installation, the system bypasses registry and environment dependencies using an embedded setup.
 
@@ -21,17 +21,17 @@ Core Setup
 Base Runtime: WinPython or Python Embedded Package (Windows)
 
 Portable Git: Included for updates and dependency handling
-
+```
 Relative Pathing:
 All scripts rely on:
 
 os.path.dirname(__file__)
 #or
 pathlib.Path.cwd()
-
+```
 This ensures compatibility regardless of USB drive letter (D:, F:, etc.).
 
-🧠 2. Local Brain: Lightweight LLMs
+## 🧠 2. Local Brain: Lightweight LLMs
 
 Models are selected for high intelligence-to-size efficiency and CPU compatibility via GGUF quantization.
 
@@ -40,7 +40,7 @@ Phi-3 Mini (3.8B)	~2.3 GB	Reasoning & Logic
 Llama-3-8B (4-bit)	~4.7 GB	Creative Writing & Chat
 TinyLlama-1.1B	~700 MB	Ultra-fast, low-resource tasks
 Gemma-2B	~1.6 GB	General knowledge & safety
-⚙️ 3. Inference & Orchestration
+## ⚙️ 3. Inference & Orchestration
 
 The inference engine converts model weights into actual responses.
 
@@ -68,7 +68,7 @@ Minimal setup overhead
 
 Handles local execution automatically
 
-🤖 4. Automation & Tool Use
+## 🤖 4. Automation & Tool Use
 
 This is where the assistant becomes “JARVIS” — moving beyond chat into action.
 
@@ -83,14 +83,14 @@ PyAutoGUI → Mouse/keyboard control when APIs aren’t available
 Function Calling Framework (ReAct Pattern)
 
 Prompting: LLM receives list of available tools/functions
-
+```
 JSON Output: Example:
 
 {"action":"launch_app","params":"Word"}
-
+```
 Local Execution: Python wrapper parses JSON and runs the action.
 
-🎙️ 5. Voice Interaction (Offline)
+## 🎙️ 5. Voice Interaction (Offline)
 
 Fully private voice support with zero cloud dependency.
 
@@ -110,7 +110,7 @@ Uses native OS voices
 
 Fast, zero latency
 
-💾 6. Hardware Requirements
+## 💾 6. Hardware Requirements
 
 Since models load directly from USB, storage speed is critical.
 
@@ -130,15 +130,19 @@ Read speeds > 400 MB/s
 
 ⚠️ Running models from USB 2.0 will cause significant loading delays.
 
-🚀 Quick Start (Architecture Layout)
-/USB-Drive
+## 🚀 Quick Start
+
+### Project Structure
+
+```
+JARVIS-on-a-Stick/
 │
-├── /Python-Embedded/     # Portable Python binaries
-├── /Models/              # GGUF model files
-├── /Workspace/           # Automation scripts
-├── /Binaries/            # llama.cpp, ffmpeg, etc.
-└── launch_jarvis.bat     # Entry point
-📜 Roadmap
+├── env/                 # Portable Python runtime
+├── Models/              # GGUF model files
+├── Workspace/           # Core automation logic
+├── Binaries/            # llama.cpp, ffmpeg, etc.
+└── launch_jarvis.bat    # Entry point
+```
 
  Implement local RAG (offline document memory)
 
@@ -146,7 +150,7 @@ Read speeds > 400 MB/s
 
  Integrate wake-word detection (pvporcupine)
 
-🧩 Vision
+## 🧩 Vision
 
 JARVIS-on-a-Stick is designed to be:
 
@@ -162,7 +166,7 @@ Zero-installation
 
 A true plug-and-play personal AI assistant.
 
-🧱 Week 1 — Foundations & Environment
+## 🧱 Week 1 — Foundations & Environment
 
 Goal: Set up the portable USB environment.
 
@@ -182,7 +186,7 @@ Hardware Check
 
 Confirm drive read speed is at least 300 MB/s for fast model loading.
 
-🧠 Week 2 — Intelligence & Inference
+## 🧠 Week 2 — Intelligence & Inference
 
 Goal: Run a local LLM entirely from USB.
 
@@ -206,7 +210,7 @@ Sends it to the model
 
 Returns a generated response
 
-🎙️ Week 3 — Voice & Function Calling
+## 🎙️ Week 3 — Voice & Function Calling
 
 Goal: Give JARVIS “ears” and “hands.”
 
@@ -229,7 +233,7 @@ Example:
 
 Build a Python dispatcher that parses JSON and executes actions.
 
-🧩 Week 4 — Synthesis & UI
+## 🧩 Week 4 — Synthesis & UI
 
 Goal: Polish the user experience and finalize the JARVIS persona.
 
@@ -247,7 +251,7 @@ Optimize startup by pre-loading the model into RAM.
 
 Perform testing on multiple guest computers.
 
-💾 Hardware Recommendations
+## 💾 Hardware Recommendations
 
 Your USB drive speed heavily impacts performance.
 
@@ -256,7 +260,7 @@ Drive Interface	USB 3.0	USB 3.1 / 3.2 Gen 2
 Read Speed	100 MB/s	400+ MB/s (NVMe USB)
 Capacity	32 GB	64–128 GB
 Host RAM	8 GB	16 GB+
-🚀 Future Roadmap
+## 🚀 Future Roadmap
 
  RAG: Add local vector memory using ChromaDB for document recall.
 
