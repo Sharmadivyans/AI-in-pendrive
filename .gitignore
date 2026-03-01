@@ -1,0 +1,17 @@
+# Ignore the heavy portable Python environment
+/env/
+
+# Ignore the heavy AI models and audio files
+/models/
+*.gguf
+*.bin
+*.wav
+*.mp3
+
+# Ignore temporary Python cache files
+__pycache__/
+*.pyc
+
+# Ignore OS system files
+.DS_Store
+Thumbs.db
