@@ -1,0 +1,13 @@
+## Day 1: Hardware Setup & Repository Initialization
+
+Objective: Prepare the physical USB drive and set up the version control safely.
+
+🛠️ Tasks Completed Today:
+
+[x] Repository Setup: Initialized the GitHub repository and established the project roadmap in the README.md.
+
+[x] Safety First (.gitignore): Created a strict .gitignore file. Why? Because portable Python environments (/env/) and local AI models (.gguf) are massive (several gigabytes). If Git tries to track them, the repository will crash. Only the core logic and scripts will be tracked here.
+
+[x] Hardware Prep: Formatted a high-speed USB 3.2 drive to NTFS / exFAT. This is mandatory because FAT32 cannot hold individual files larger than 4GB, and our AI model will be around 4.5GB.
+
+[x] Speed Test: Verified the USB drive read speeds (aiming for ~300 MB/s). High read speeds are critical so the AI "Brain" loads into the computer's RAM quickly when plugged in.
