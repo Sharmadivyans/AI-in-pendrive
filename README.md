@@ -254,12 +254,13 @@ Perform testing on multiple guest computers.
 ## 💾 Hardware Recommendations
 
 Your USB drive speed heavily impacts performance.
-
+```
 Component	Minimum	Recommended
 Drive Interface	USB 3.0	USB 3.1 / 3.2 Gen 2
 Read Speed	100 MB/s	400+ MB/s (NVMe USB)
 Capacity	32 GB	64–128 GB
 Host RAM	8 GB	16 GB+
+```
 ## 🚀 Future Roadmap
 
  RAG: Add local vector memory using ChromaDB for document recall.
