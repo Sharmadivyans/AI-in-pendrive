@@ -18,6 +18,6 @@ echo.
 echo Launching from: %DRIVE%
 echo.
 
-"%PYTHON_EXE%" "%DRIVE%jarvis.py"
+"%PYTHON_EXE%" "%DRIVE%listen_test.py"
 
 pause
