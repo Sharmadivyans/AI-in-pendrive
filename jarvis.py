@@ -1,101 +1,108 @@
 import sys
 import os
+import queue
+import json
 import pyttsx3
+import sounddevice as sd
+from vosk import Model, KaldiRecognizer
 from llama_cpp import Llama
 
-# ==============================
-# DYNAMIC USB PATHS
-# ==============================
+# Import the custom modules you built!
+import dispatcher
+
+# --- DYNAMIC PATHS ---
 USB_ROOT = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(USB_ROOT, "models", "brain.gguf")
+VOSK_PATH = os.path.join(USB_ROOT, "models", "vosk_model")
 
-# ==============================
-# INIT VOICE ENGINE
-# ==============================
+# --- INITIALIZE VOICE (TTS) ---
 tts = pyttsx3.init()
 tts.setProperty('rate', 160)
 
 def speak(text):
-    """Speak text using offline TTS"""
+    print(f"\nJARVIS: {text}")
     tts.say(text)
     tts.runAndWait()
 
+# --- INITIALIZE EARS (VOSK) ---
+audio_queue = queue.Queue()
+def audio_callback(indata, frames, time, status):
+    if status:
+        print(status, file=sys.stderr)
+    audio_queue.put(bytes(indata))
+
 def main():
     print("========================================")
-    print("   NEURAL KEY: VOICE CORE ACTIVE")
+    print("   NEURAL KEY: FULL SYSTEM ONLINE")
     print("========================================")
 
-    if not os.path.exists(MODEL_PATH):
-        print(f"[ERROR] Brain not found at: {MODEL_PATH}")
+    # 1. System Checks
+    if not os.path.exists(MODEL_PATH) or not os.path.exists(VOSK_PATH):
+        print("[CRITICAL ERROR] Missing AI or Vosk models in /models directory.")
         return
 
-    # Wake-up message
-    speak("Initializing neural core.")
+    print("\n[SYSTEM] Booting Neural Core and Acoustic Models... (Please wait)")
+    
+    # 2. Load Brain & Ears into RAM
+    llm = Llama(model_path=MODEL_PATH, n_ctx=2048, n_gpu_layers=0, verbose=False)
+    vosk_model = Model(VOSK_PATH)
+    recognizer = KaldiRecognizer(vosk_model, 16000)
 
-    # Load AI model
-    llm = Llama(
-        model_path=MODEL_PATH,
-        n_ctx=2048,
-        n_gpu_layers=0,
-        verbose=False
-    )
+    speak("All systems online. I am listening.")
 
-    print("[SYSTEM] Neural Core Online. Type 'exit' to quit.\n")
-    speak("System ready.")
+    # 3. The Master Loop (Listen -> Think -> Act -> Speak)
+    try:
+        with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16',
+                               channels=1, callback=audio_callback):
+            while True:
+                data = audio_queue.get()
+                
+                # If JARVIS hears a full sentence
+                if recognizer.AcceptWaveform(data):
+                    result = json.loads(recognizer.Result())
+                    user_text = result.get("text", "")
+                    
+                    if user_text.strip() == "":
+                        continue
+                        
+                    print(f"\nYOU SAID: '{user_text}'")
 
-    # ==============================
-    # BASIC MEMORY / CHAT HISTORY
-    # ==============================
-    system_prompt = (
-        "You are Neural Key, a portable offline AI assistant running from a USB drive. "
-        "You are helpful, concise, futuristic, and slightly JARVIS-like. "
-        "Answer clearly and avoid overly long responses."
-    )
+                    # Check for exit command
+                    if "shut down" in user_text or "exit" in user_text:
+                        speak("Shutting down systems. Goodbye.")
+                        break
 
-    conversation_history = f"System: {system_prompt}\n"
+                    speak("Processing...")
 
-    while True:
-        user_input = input("\nYou: ")
+                    # --- THE HYBRID PROMPT ---
+                    # This tells the AI to output JSON for commands, and normal text for conversation
+                    system_prompt = """You are JARVIS. 
+If the user asks to open an app, output strictly JSON: {"task": "open_app", "target": "app name"}.
+If the user asks for the time, output strictly JSON: {"task": "get_time", "target": "none"}.
+If it is a general question, do NOT use JSON. Answer conversationally in plain text."""
+                    
+                    prompt = f"System: {system_prompt}\nUser: {user_text}\nAssistant:"
+                    
+                    # Generate the Brain's response
+                    response = llm(prompt, max_tokens=150, stop=["User:", "\n\n"])
+                    ai_text = response['choices'][0]['text'].strip()
 
-        # Exit command
-        if user_input.lower() in ['exit', 'quit']:
-            speak("Shutting down.")
-            break
-
-        # Ignore blank input
-        if not user_input.strip():
-            continue
-
-        # Add user input to history
-        conversation_history += f"User: {user_input}\nAssistant:"
-
-        # Generate response
-        response = llm(
-            conversation_history,
-            max_tokens=180,
-            temperature=0.7,
-            top_p=0.9,
-            stop=["User:", "System:"]
-        )
-
-        ai_text = response['choices'][0]['text'].strip()
-
-        # Fallback if empty response
-        if not ai_text:
-            ai_text = "I am online, but I could not generate a response."
-
-        print(f"\nAI: {ai_text}")
-        speak(ai_text)
-
-        # Add AI reply to history
-        conversation_history += f" {ai_text}\n"
-
-        # Optional: Prevent history from becoming too large
-        if len(conversation_history) > 6000:
-            conversation_history = (
-                f"System: {system_prompt}\n"
-                + conversation_history[-4000:]
-            )
+                    # --- THE DECISION ENGINE ---
+                    try:
+                        # Try to read the AI's output as JSON (Command Mode)
+                        json_command = json.loads(ai_text)
+                        if "task" in json_command:
+                            # Send to dispatcher and speak the result (e.g., "Successfully opened Calculator")
+                            action_result = dispatcher.execute_command(ai_text)
+                            speak(action_result)
+                    except json.JSONDecodeError:
+                        # If it's NOT JSON, the AI just wants to chat! (Conversation Mode)
+                        speak(ai_text)
+                        
+    except KeyboardInterrupt:
+        print("\n[SYSTEM] Terminated by user.")
+    except Exception as e:
+        print(f"\n[ERROR] System crash: {e}")
 
 if __name__ == "__main__":
     main()
