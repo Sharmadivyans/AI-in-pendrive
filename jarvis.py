@@ -76,9 +76,11 @@ def main():
 
                     # --- THE HYBRID PROMPT ---
                     # This tells the AI to output JSON for commands, and normal text for conversation
-                    system_prompt = """You are JARVIS. 
-If the user asks to open an app, output strictly JSON: {"task": "open_app", "target": "app name"}.
-If the user asks for the time, output strictly JSON: {"task": "get_time", "target": "none"}.
+                    system_prompt = """You are a highly advanced, offline tactical AI framework.
+Your primary directive is system automation and secure data processing. 
+Speak concisely, formally, and use technical terminology. Address the user as 'Operator'.
+If the Operator asks to open an app, output strictly JSON: {"task": "open_app", "target": "app name"}.
+If the Operator asks for the time, output strictly JSON: {"task": "get_time", "target": "none"}.
 If it is a general question, do NOT use JSON. Answer conversationally in plain text."""
                     
                     prompt = f"System: {system_prompt}\nUser: {user_text}\nAssistant:"
