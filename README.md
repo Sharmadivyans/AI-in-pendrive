@@ -238,19 +238,12 @@ Build a Python dispatcher that parses JSON and executes actions.
 Goal: Polish the user experience and finalize the JARVIS persona.
 
 Tasks
-
 Add pyttsx3 for offline text-to-speech responses.
-
 Create either:
-
 A wake-word listener, or
-
 A lightweight terminal UI
-
 Optimize startup by pre-loading the model into RAM.
-
 Perform testing on multiple guest computers.
-
 ##  Hardware Recommendations
 
 Your USB drive speed heavily impacts performance.
