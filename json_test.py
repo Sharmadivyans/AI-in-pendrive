@@ -2,8 +2,14 @@ import sys
 import os
 from llama_cpp import Llama
 
-# --- DYNAMIC PATHS ---
-USB_ROOT = os.path.dirname(os.path.abspath(__file__))
+# --- DYNAMIC PATHS (The Fix) ---
+# This finds the folder where the script is (E:\src)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# This moves UP one level to the USB Root (E:\)
+USB_ROOT = os.path.dirname(SCRIPT_DIR) 
+
+# Now it looks in the correct place: E:\models\brain.gguf
 MODEL_PATH = os.path.join(USB_ROOT, "models", "brain.gguf")
 
 def main():
